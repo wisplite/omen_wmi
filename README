@@ -1,0 +1,13 @@
+# HP WMI Backport
+
+This is a custom build of the HP WMI driver from the upcoming Kernel 7 to Kernel 6.18 for the OMEN 16t-wf100 laptop. This theoretically applies to the entire 16-wf0xxx/16-wf1xxx model range, but I cannot test that myself. YMMV.
+
+I made this because the official driver does not recognize my board revision (8C77), and therefore does not enable fan control.
+This causes the fans to never spin up, and the laptop to overheat.
+The patch for the fans was to simply add the 8C77 board revision to the array of `victus_s_thermal_profile_boards`. For whatever reason, this OMEN laptop uses the Victus S protocol, and has a similar board number to Victus laptops. Don't ask me why.
+
+This module also has a brightness hotfix. I know this is not the correct place to put this, but it was mostly hacked together so I could have brightness control.
+For whatever reason, if you switch this laptop's mux switch from Optimus to Discrete, the brightness control is passed from the Intel iGPU to the EC, which means you're stuck at whatever the default brightness is (which is very low). I decompiled the ACPI tables and found the method for controlling brightness, and then built a super basic controller into this module.
+This backlight fix was extremely hastily thrown together, it doesn't properly query the backlight state (the current brightness is instead cached), which means that you need to manually set the brightness with your DE's brightness slider at boot, it will not properly restore your brightness. If anyone really wants me to fix this, I can.
+
+Also note that while the initial code for the brightness control was hand-written, I am not experienced in the Linux kernel, and used Claude Sonnet 4.6 to help debug it. It seems to work perfectly fine on my machine, and the only harm of this code failing should be that your brightness will be stuck, but if you don't want to take that risk, you can simply remove all the code between the "Brightness hotfix" comments. Everything else is stock HP_WMI. I did not have the foresight to track this project in Git until now. I will note any future changes in this README (I am currently working on patching the performance profile control, as it is broken and stuck on balanced right now), and they will be properly tracked in Git from here on.
