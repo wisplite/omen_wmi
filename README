@@ -1,4 +1,4 @@
-# HP WMI Backport
+# HP WMI Hotfix
 
 This is a custom build of the HP WMI driver from the upcoming Kernel 7 to Kernel 6.18 for the OMEN 16t-wf100 laptop. This theoretically applies to the entire 16-wf0xxx/16-wf1xxx model range, but I cannot test that myself. YMMV.
 
